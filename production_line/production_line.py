@@ -24,7 +24,8 @@ class ProductionLine:
     _batch_id: Optional[Node] = None
     _production_rate: Optional[Node] = None
     _efficiency: Optional[Node] = None
-    _instance = None
+    _simulation_tasks: list[Task] = []
+    instance = None
 
     def __init__(
         self,
@@ -84,11 +85,13 @@ class ProductionLine:
     async def run_simulation(self) -> list[Task]:
         await self.start_batch("batch-12")
         """Run the simulation of the production line"""
-        tasks = [
-            asyncio.create_task(self._set_production_rate()),
-            asyncio.create_task(self._set_efficiency()),
-        ]
-        return tasks
+        self._simulation_tasks.extend(
+            [
+                asyncio.create_task(self._set_production_rate()),
+                asyncio.create_task(self._set_efficiency()),
+            ]
+        )
+        return self._simulation_tasks
 
     async def _set_production_rate(self):
         """Set the production rate of the production line"""
@@ -111,3 +114,13 @@ class ProductionLine:
             )
             self._logger.info(f"Efficiency set to {efficiency} for {self.name}")
             await asyncio.sleep(1)
+
+    def add_simulation_task(self, task: list[Task]):
+        """Add an equipment task to the production line"""
+        if self._simulation_tasks is None:
+            self._simulation_tasks = []
+        self._simulation_tasks.extend(task)
+
+    def get_simulation_tasks(self) -> list[Task]:
+        """Get the simulation tasks"""
+        return self._simulation_tasks

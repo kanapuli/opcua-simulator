@@ -66,6 +66,11 @@ async def get_milk_processing_line(
         idx=idx,
     )
     milk_processing_line_node = await milk_processing_line.initialize()
-    await get_pastuerizer(milk_processing_line_node, idx)
-    await get_homogenizer(milk_processing_line_node, idx)
+    pasteurizer = await get_pastuerizer(milk_processing_line_node, idx)
+    homogenizer = await get_homogenizer(milk_processing_line_node, idx)
+
+    # Add the equipment simulation tasks to the production line
+    milk_processing_line.add_simulation_task(pasteurizer.run_simulation())
+    milk_processing_line.add_simulation_task(homogenizer.run_simulation())
+
     return milk_processing_line

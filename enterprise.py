@@ -137,6 +137,11 @@ class Enterprise:
         await self.node.add_reference(production_line.node, ua.ObjectIds.Organizes)
 
     @property
+    def production_lines(self) -> list[ProductionLine]:
+        """Get the production lines"""
+        return self._production_lines
+
+    @property
     def milk_storage(self) -> Optional[MilkStorageTank]:
         """Get the milk storage tank"""
         return self._milk_storage

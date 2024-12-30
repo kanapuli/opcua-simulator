@@ -35,7 +35,11 @@ async def main():
         milk_processing_line = await get_milk_processing_line(
             dairy_enterprise.node, idx, _logger
         )
-        simulation_tasks.extend(await milk_processing_line.run_simulation())
+        # Collect tasks from milk processing line
+        milk_line_tasks = await milk_processing_line.run_simulation()
+        simulation_tasks.extend(milk_line_tasks)
+
+        # Initialize other production lines...
         icecrean_production_line = ProductionLine(
             name="Icecrean Production Line",
             logger=_logger,
@@ -51,7 +55,8 @@ async def main():
             idx=idx,
         )
         await cheese_production_line.initialize()
-        await cheese_production_line.run_simulation()
+        cheese_line_tasks = await cheese_production_line.run_simulation()
+        simulation_tasks.extend(cheese_line_tasks)
 
         yogurt_production_line = ProductionLine(
             name="Yogurt Production Line",
@@ -65,7 +70,20 @@ async def main():
         await dairy_enterprise.add_production_line(yogurt_production_line)
         await dairy_enterprise.add_production_line(icecrean_production_line)
 
-        await asyncio.gather(*simulation_tasks)
+        # Ensure all tasks are valid before gathering
+        valid_tasks = [
+            task for task in simulation_tasks if isinstance(task, asyncio.Task)
+        ]
+
+        try:
+            # Then gather them
+            await asyncio.gather(*valid_tasks)
+        except Exception as e:
+            _logger.error(f"Error during simulation: {e}")
+            # Cancel any remaining tasks
+            for task in valid_tasks:
+                if not task.done():
+                    task.cancel()
 
 
 if __name__ == "__main__":
