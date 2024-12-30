@@ -1,0 +1,2 @@
+asyncua==1.1.5
+logging==0.4.9.6
