@@ -25,6 +25,10 @@ class Storage:
     async def initialize(self):
         """Initialize the storage unit in the OPC UA server"""
         self.node = await self.parent_node.add_object(self.idx, self.name)
+        # Add reference to the parent node
+        await self.parent_node.add_reference(
+            self.node, ua.ObjectIds.HasChild, forward=True
+        )
         self.logger.info(f"Created storage node: {self.name}")
 
         for variable in self.variables:
