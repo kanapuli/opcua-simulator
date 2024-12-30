@@ -62,51 +62,6 @@ async def main():
         await dairy_enterprise.add_production_line(icecrean_production_line)
         await asyncio.sleep(1000)
 
-    # pumpObject = await serverObject.add_object(idx, "Pump")
-    # pumpStatus = await pumpObject.add_variable(idx, "PumpStatus", 0.0)
-    # await pumpStatus.set_writable()
-    # pumpSpeed = await pumpObject.add_variable(idx, "PumpSpeed", 0.0)
-    # await pumpSpeed.set_writable()
-    # pumpDirection = await pumpObject.add_variable(idx, "PumpDirection", 0.0)
-    # await pumpDirection.set_writable()
-    # pumpFlowRate = await pumpObject.add_variable(idx, "PumpFlowRate", 0.0)
-    # await pumpFlowRate.set_writable()
-    # pumpPressure = await pumpObject.add_variable(idx, "PumpPressure", 0.0)
-    # await pumpPressure.set_writable()
-    # pumpTemperature = await pumpObject.add_variable(idx, "PumpTemperature", 0.0)
-    # await pumpTemperature.set_writable()
-    # pumpVoltage = await pumpObject.add_variable(idx, "PumpVoltage", 0.0)
-    # await pumpVoltage.set_writable()
-    # pumpCurrent = await pumpObject.add_variable(idx, "PumpCurrent", 0.0)
-    # await pumpCurrent.set_writable()
-    # pumpPower = await pumpObject.add_variable(idx, "PumpPower", 0.0)
-    # await pumpPower.set_writable()
-    # await server.nodes.objects.add_method(
-    #     ua.NodeId("ServerMethod", idx),
-    #     ua.QualifiedName("ServerMethod", idx),
-    #     func,
-    #     [ua.VariantType.Int64],
-    #     [ua.VariantType.Int64],
-    # )
-    # _logger.info("Starting server!")
-    # async with server:
-    #     pumpVariables = [
-    #         pumpStatus,
-    #         pumpSpeed,
-    #         pumpDirection,
-    #         pumpFlowRate,
-    #         pumpPressure,
-    #         pumpTemperature,
-    #         pumpVoltage,
-    #         pumpCurrent,
-    #         pumpPower,
-    #     ]
-    #     tasks = [
-    #         asyncio.create_task(update_variable(var, _logger)) for var in pumpVariables
-    #     ]
-
-    #     await asyncio.gather(*tasks)
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
