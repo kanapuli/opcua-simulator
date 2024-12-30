@@ -86,6 +86,60 @@ The Equipment class represents individual machines in the production line:
   - String: State descriptions
   - Int32/Int64/Int16: Counter values
 
+## Storage Components
+
+### Storage Base Class
+The Storage class serves as the base for all storage units in the system:
+
+- **Common Features**:
+  - Configurable variables and properties
+  - OPC UA node management
+  - Hierarchical node structure
+
+### Milk Storage Tank
+
+```
+MilkStorageTank (Object)
+├── Variables
+│   ├── milk_volume (Double) [Example: 500.0]
+│   ├── temperature (Double) [Example: 4.0]
+│   └── status (Boolean) [Example: true]
+└── Properties
+    ├── max_capacity (Double) [Value: 1000.0]
+    ├── min_temperature (Double) [Value: 2.0]
+    └── max_temperature (Double) [Value: 6.0]
+```
+
+### Cold Storage
+
+```
+ColdStorage (Object)
+├── Variables
+│   ├── temperature (Double) [Example: 2.0]
+│   └── capacity_utilization (Double) [Example: 75.0]
+└── Properties
+    ├── min_temperature (Double) [Value: -2.0]
+    ├── max_temperature (Double) [Value: 4.0]
+    └── total_capacity (Double) [Value: 1000.0]
+```
+
+### Storage Features
+
+- **Real-time Monitoring**:
+  - Temperature control and monitoring
+  - Capacity tracking
+  - Status updates
+
+- **Safety Controls**:
+  - Temperature range enforcement
+  - Capacity limits
+  - Status monitoring
+
+- **Integration**:
+  - Direct connection with production lines
+  - Quality control system integration
+  - Enterprise-level monitoring
+
 ## Running the Application
 
 ### Using Docker
