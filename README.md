@@ -140,6 +140,45 @@ ColdStorage (Object)
   - Quality control system integration
   - Enterprise-level monitoring
 
+## Quality Control System
+
+### Quality Control Class
+The QualityControl class manages product quality monitoring and testing:
+
+```
+QualityControl (Object)
+├── Variables
+│   ├── pH Level (Double) [Example: 6.5]
+│   ├── Fat Content (Double) [Example: 3.0]
+│   └── Bacterial Count (Int64) [Example: 1000]
+└── Methods
+    ├── RunTest()
+    └── GenerateReport()
+```
+
+### Quality Parameters
+
+- **Acceptable Ranges**:
+  - pH Level: 6.5 - 6.8
+  - Fat Content: 3.0% - 5.0%
+  - Bacterial Count: < 1000
+
+### Quality Control Features
+
+- **Real-time Monitoring**:
+  - Automated test execution
+  - Continuous parameter tracking
+  - Report generation
+
+- **Testing Methods**:
+  - RunTest(): Performs quality control tests
+  - GenerateReport(): Creates detailed quality reports
+
+- **Integration**:
+  - Connected to production lines
+  - Automated quality verification
+  - Real-time status updates
+
 ## Running the Application
 
 ### Using Docker
