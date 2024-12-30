@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+from asyncio import Task
 from asyncua import Server
 from enterprise import Enterprise
 from asyncua.common.methods import uamethod
@@ -17,6 +18,7 @@ async def main():
     uri = "https://kanapuli.github.io/dairy-enterprise"
     idx = await server.register_namespace(uri)
 
+    simulation_tasks: list[Task] = []
     async with server:
         _logger.info("Starting OPC UA server...")
         dairy_enterprise = await Enterprise.create(
@@ -27,11 +29,13 @@ async def main():
             production_lines=[],
         )
         _logger.info(f"Created {dairy_enterprise}")
+        # Start the simulation for enterprise variables
+        simulation_tasks.extend(await dairy_enterprise.run_simulation())
 
         milk_processing_line = await get_milk_processing_line(
             dairy_enterprise.node, idx, _logger
         )
-        await milk_processing_line.run_simulation()
+        simulation_tasks.extend(await milk_processing_line.run_simulation())
         icecrean_production_line = ProductionLine(
             name="Icecrean Production Line",
             logger=_logger,
@@ -60,7 +64,8 @@ async def main():
         await dairy_enterprise.add_production_line(cheese_production_line)
         await dairy_enterprise.add_production_line(yogurt_production_line)
         await dairy_enterprise.add_production_line(icecrean_production_line)
-        await asyncio.sleep(1000)
+
+        await asyncio.gather(*simulation_tasks)
 
 
 if __name__ == "__main__":

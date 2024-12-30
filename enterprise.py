@@ -1,5 +1,8 @@
+import asyncio
+from asyncio import Task
 import logging
-from asyncua import Server, ua
+import random
+from asyncua import Server, ua, Node
 from production_line.production_line import ProductionLine
 from storage import MilkStorageTank, ColdStorage
 from asyncua.common.methods import uamethod
@@ -13,8 +16,8 @@ class Enterprise:
     """
 
     _instance = None
-    _total_milk_processed: float = 0.0
-    _production_status: bool = False
+    _total_milk_processed: Optional[Node] = None
+    _production_status: Optional[Node] = None
 
     def __init__(
         self,
@@ -102,11 +105,11 @@ class Enterprise:
             await self.node.add_reference(production_line.node, ua.ObjectIds.Organizes)
 
         self._total_milk_processed = await self.node.add_variable(
-            self._idx, "TotalMilkProcessed", self._total_milk_processed
+            self._idx, "TotalMilkProcessed", 0.0, ua.VariantType.Double
         )
 
         self._production_status = await self.node.add_variable(
-            self._idx, "ProductionStatus", self._production_status
+            self._idx, "ProductionStatus", False, ua.VariantType.Boolean
         )
 
         await self.node.add_method(self._idx, "StartProduction", self._start_production)
@@ -115,13 +118,13 @@ class Enterprise:
     @uamethod
     async def _start_production(self):
         """Start the production"""
-        self._production_status = True
+        await self._production_status.write_value(True)
         self._logger.info(f"Production started for {self.name}")
 
     @uamethod
     async def _stop_production(self):
         """Stop the production"""
-        self._production_status = False
+        await self._production_status.write_value(False)
         self._logger.info(f"Production stopped for {self.name}")
 
     def __str__(self):
@@ -147,3 +150,28 @@ class Enterprise:
     def quality_control(self):
         """Get the quality control system"""
         return self._quality_control
+
+    async def run_simulation(self) -> list[Task]:
+        """Run the simulation"""
+        tasks = [
+            asyncio.create_task(self._set_total_milk_processed()),
+            asyncio.create_task(self._set_production_status()),
+        ]
+        return tasks
+
+    async def _set_total_milk_processed(self):
+        """Set the total milk processed"""
+        while True:
+            total_milk_processed = await self._total_milk_processed.read_value()
+            await self._total_milk_processed.set_value(
+                round(total_milk_processed + random.uniform(0, 1.5), 2)
+            )
+            self._logger.info(
+                f"Total milk processed: {total_milk_processed} for {self.name}"
+            )
+            await asyncio.sleep(1)
+
+    async def _set_production_status(self):
+        """Set the production status"""
+        await self._production_status.write_value(True)
+        self._logger.info(f"Production status set to True for {self.name}")

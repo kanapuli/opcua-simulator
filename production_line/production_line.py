@@ -3,6 +3,7 @@ from typing import Optional
 from production_line.equipment import Equipment
 from asyncua import Node, ua, Client
 import asyncio
+from asyncio import Task
 import random
 
 
@@ -80,33 +81,33 @@ class ProductionLine:
         await self._production_rate.write_value(0.0)
         await self._efficiency.write_value(0.0)
 
-    async def run_simulation(self):
+    async def run_simulation(self) -> list[Task]:
         await self.start_batch("batch-12")
         """Run the simulation of the production line"""
         tasks = [
             asyncio.create_task(self._set_production_rate()),
             asyncio.create_task(self._set_efficiency()),
         ]
-        await asyncio.gather(*tasks)
+        return tasks
 
     async def _set_production_rate(self):
         """Set the production rate of the production line"""
         while True:
             production_rate = await self._production_rate.read_value()
             await self._production_rate.set_value(
-                round(production_rate * random.uniform(0.5, 1.0), 2)
+                round(production_rate * random.uniform(0.5, 1.0), 4)
             )
             self._logger.info(
                 f"Production rate set to {production_rate} for {self.name}"
             )
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
     async def _set_efficiency(self):
         """Set the efficiency of the production line"""
         while True:
             efficiency = await self._efficiency.read_value()
             await self._efficiency.set_value(
-                round(efficiency * random.uniform(0.5, 1.0), 2)
+                round(efficiency * random.uniform(0.5, 1.0), 4)
             )
             self._logger.info(f"Efficiency set to {efficiency} for {self.name}")
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
