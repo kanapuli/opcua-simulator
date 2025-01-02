@@ -83,8 +83,13 @@ class Enterprise:
 
     async def _initialize(self):
         """Add the enterprise node to the OPC UA server"""
-        server_object = self._server.nodes.server
-        self.node = await server_object.add_object(self._idx, self.name)
+
+        objects = self._server.get_objects_node()
+        model_view = await objects.add_folder(self._idx, "ModelView")
+        # Add a folder to the server
+        # server_object = self._server.nodes.server
+        # model_view = await server_object.add_folder(self._idx, "ModelView")
+        self.node = await model_view.add_object(self._idx, self.name)
         self._logger.info(f"Created enterprise node: {self.name}")
 
         # Initialize quality control
