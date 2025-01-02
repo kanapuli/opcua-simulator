@@ -86,10 +86,10 @@ class Enterprise:
 
         objects = self._server.get_objects_node()
         model_view = await objects.add_folder(self._idx, "ModelView")
-        # Add a folder to the server
-        # server_object = self._server.nodes.server
-        # model_view = await server_object.add_folder(self._idx, "ModelView")
         self.node = await model_view.add_object(self._idx, self.name)
+        # Add a child reference
+        await model_view.delete_reference(self.node, ua.ObjectIds.Organizes)
+        await model_view.add_reference(self.node, ua.ObjectIds.HasChild)
         self._logger.info(f"Created enterprise node: {self.name}")
 
         # Initialize quality control
